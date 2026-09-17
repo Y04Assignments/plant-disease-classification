@@ -32,14 +32,13 @@ __pycache__/
 *.h5
 *.keras
 *.weights.h5
-models/
+
 
 # Large datasets
-dataset/
+
 
 # Generated results
-results/
-figures/
+
 
 # Logs
 *.log
