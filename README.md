@@ -379,7 +379,7 @@ For MobileNetV2, ResNet50, and EfficientNetB0:
 
 The project workload is shared across 4 university team members.
 
-### Member 1 — Team Leader
+### Member 1 — 
 - Overall experimental framework and methodology design.
 - Oversight of dataset integrity and EDA validation.
 - Definition of common preprocessing standards and evaluation protocols.
