@@ -35,9 +35,12 @@ __pycache__/
 
 
 # Large datasets
+dataset/*
+!dataset/.gitkeep
 
-
-# Generated results
+# Saved models directory
+models/*
+!models/.gitkeep
 
 
 # Logs
