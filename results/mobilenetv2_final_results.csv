@@ -1,0 +1,2 @@
+experiment_id,model,test_samples,accuracy,weighted_precision,weighted_recall,weighted_f1,weighted_roc_auc,best_val_accuracy,best_val_loss,best_epoch,training_time_seconds,training_time_minutes,fine_tune_from_layer,trainable_backbone_layers,initial_learning_rate,batch_size,input_size,dropout
+MNV2-FT-01,MobileNetV2,150,0.9466666666666667,0.9482151835093011,0.9466666666666667,0.9469805682812065,0.9975999999999999,1.0,0.03190036490559578,5,181.49635314941406,3.024939219156901,134,13,1e-05,32,224x224,0.2

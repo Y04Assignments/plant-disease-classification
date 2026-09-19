@@ -1,0 +1,30 @@
+{
+    "image_size": "224x224",
+    "batch_size": 32,
+    "class_names": [
+        "Healthy",
+        "Powdery",
+        "Rust"
+    ],
+    "num_classes": 3,
+    "seed": 42,
+    "augmentation": {
+        "enabled_for_training": true,
+        "enabled_for_validation": false,
+        "enabled_for_test": false,
+        "horizontal_flip": true,
+        "rotation_factor": 0.05,
+        "translation_factor": 0.05,
+        "zoom_factor": 0.1
+    },
+    "model_specific_preprocessing": {
+        "model": "MobileNetV2",
+        "function": "tf.keras.applications.mobilenet_v2.preprocess_input",
+        "output_range": "-1 to 1"
+    },
+    "dataset_split_usage": {
+        "training": "train_pipeline",
+        "validation": "validation_pipeline",
+        "test": "test_pipeline"
+    }
+}
