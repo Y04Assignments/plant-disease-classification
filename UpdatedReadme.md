@@ -109,7 +109,7 @@ dataset/
 
 ## 5. Standardized Preprocessing Pipeline
 
-Implemented in the project pipeline (configured in [results/mobilenetv2_preprocessing_config.json](file:///Users/gavidurushela/DL%20ass/plant-disease-classification/results/mobilenetv2_preprocessing_config.json)):
+Implemented in the project pipeline (configured in `results/mobilenetv2_preprocessing_config.json`):
 
 ### Pipeline Specifications
 - **Target Spatial Resolution:** $224 \times 224$ pixels
@@ -324,13 +324,13 @@ results/
 
 ## 12. Interactive Streamlit Demonstration Application
 
-A fully operational web demonstration interface has been developed in [app/app.py](file:///Users/gavidurushela/DL%20ass/plant-disease-classification/app/app.py) supported by the inference module in [src/inference/predictor.py](file:///Users/gavidurushela/DL%20ass/plant-disease-classification/src/inference/predictor.py).
+A fully operational web demonstration interface has been developed in `app/app.py` supported by the inference module in `src/inference/predictor.py`.
 
 ### Capabilities
 - **File Upload:** Accepts leaf images in standard formats (`.jpg`, `.jpeg`, `.png`).
 - **Live Preview:** Displays the uploaded leaf specimen.
 - **Automated Ingestion:** Converts to RGB, resizes to $224 \times 224$, and executes MobileNetV2 preprocessing.
-- **Model Execution:** Invokes the fine-tuned `MNV2-FT-01` model ([models/mobilenetv2_ft.keras](file:///Users/gavidurushela/DL%20ass/plant-disease-classification/models/mobilenetv2_ft.keras)).
+- **Model Execution:** Invokes the fine-tuned `MNV2-FT-01` model (`models/mobilenetv2_ft.keras`).
 - **Prediction Output:** Outputs the predicted disease class, confidence percentage, and per-class probability breakdown with visual progress bars.
 
 ```mermaid
@@ -498,7 +498,7 @@ python -m ipykernel install --user --name plant-disease-env --display-name "Pyth
 
 ## 16. Git Configuration & Repository Cleanliness
 
-To prevent repository bloat and credential leaks, strict exclusion rules are enforced in [.gitignore](file:///Users/gavidurushela/DL%20ass/plant-disease-classification/.gitignore):
+To prevent repository bloat and credential leaks, strict exclusion rules are enforced in `.gitignore`:
 
 ```gitignore
 # Virtual Environments

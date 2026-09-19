@@ -1,51 +1,80 @@
-# Virtual environment
+# ==========================================
+# Virtual Environments
+# ==========================================
+
 venv/
 .venv/
 env/
 
-# Large model files
-*.h5
-*.keras
-*.weights.h5
 
+# ==========================================
+# Python Cache / Temporary Files
+# ==========================================
 
-# Python cache
 __pycache__/
 *.py[cod]
 *$py.class
 
+
+# ==========================================
 # Jupyter
+# ==========================================
+
 .ipynb_checkpoints/
 
-# IDE / Editor
-.vscode/
-.idea/
 
-# macOS
-.DS_Store
+# ==========================================
+# Large Trained Model Files
+# ==========================================
 
-# Environment variables / secrets
-.env
-.env.*
-
-# Trained model files
 *.h5
 *.keras
 *.weights.h5
 
 
-# Large datasets
+# ==========================================
+# Dataset
+# ==========================================
+
 dataset/*
 !dataset/.gitkeep
 
-# Saved models directory
+
+# ==========================================
+# Saved Models Directory
+# ==========================================
+
 models/*
 !models/.gitkeep
 
 
-# Logs
-*.log
+# ==========================================
+# IDE / Editor
+# ==========================================
 
-# Temporary files
+.vscode/
+.idea/
+
+
+# ==========================================
+# macOS
+# ==========================================
+
+.DS_Store
+
+
+# ==========================================
+# Environment Variables / Secrets
+# ==========================================
+
+.env
+.env.*
+
+
+# ==========================================
+# Logs / Temporary Files
+# ==========================================
+
+*.log
 *.tmp
 *.temp
