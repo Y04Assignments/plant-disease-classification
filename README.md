@@ -3,7 +3,7 @@
 > **Short Name:** Plant Disease Recognition Using Deep Learning  
 > **Project Type:** Supervised Image Classification  
 > **Target Classes:** `Healthy`, `Powdery` (Powdery Mildew), `Rust` (Leaf Rust)  
-> **Status:** In Active Development (Preprocessing, MobileNetV2 Pipeline, Evaluation & Streamlit UI Completed)
+> **Status:** In Active Development (Preprocessing, MobileNetV2 Pipeline, ResNet50 Pipeline, Evaluations & Streamlit UI Completed)
 
 ---
 
@@ -36,8 +36,8 @@ To maintain rigorous scientific standards, the following guidelines govern all p
 - **Zero Fabrication Policy:** No metrics, URLs, licenses, dataset provenance, or model outcomes are assumed or invented.
 - **Strict Role Boundaries:** Each member has distinct architectural and pipeline responsibilities. Unfinished or unassigned components are explicitly identified as *In Progress* or *Planned*.
 - **Clear Status Distinction:**
-  - **Completed Work:** Data auditing, standardized preprocessing pipeline, MobileNetV2 baseline and fine-tuning experiments, final test evaluation for MobileNetV2, confusion matrix and error analysis, and local Streamlit inference application.
-  - **Ongoing / Planned Work:** Custom CNN (Member 1), ResNet50 (Member 3), EfficientNetB0 (Member 4), and cross-architecture benchmark synthesis.
+  - **Completed Work:** Data auditing, standardized preprocessing pipelines, MobileNetV2 baseline and fine-tuning experiments (Member 2), ResNet50 baseline and fine-tuning experiments (Member 3), final test evaluations for MobileNetV2 and ResNet50, confusion matrices, detailed error analyses, and local Streamlit inference applications.
+  - **Ongoing / Planned Work:** Custom CNN (Member 1), EfficientNetB0 (Member 4), and final cross-architecture benchmark synthesis.
 - **Unverified Attributes:** If external attributes (such as exact Kaggle source URLs or specific dataset licensing) lack direct repository proof, they are explicitly marked as *“Not yet verified”* or *“To be completed by the team.”*
 
 ---
@@ -49,8 +49,8 @@ The project workload is distributed across four university team members with cle
 | Member | Assigned Primary Responsibilities | Current Implementation Status |
 | :--- | :--- | :--- |
 | **Member 1** | • Overall project framework & experimental protocol<br>• Dataset integrity oversight & EDA documentation<br>• Custom CNN baseline architecture from scratch<br>• Cross-model comparison coordination | *Custom CNN: In Progress / Planned* |
-| **Member 2** *(Current Scope)* | • Standardized preprocessing & data pipeline<br>• Data augmentation design & leak prevention<br>• MobileNetV2 transfer learning & fine-tuning<br>• Metric tracking, loss curves & training time logs<br>• Test evaluation, confusion matrix & error analysis<br>• Interactive Streamlit UI & inference module | **Completed & Fully Documented** |
-| **Member 3** | • ResNet50 transfer learning & fine-tuning<br>• Residual feature extraction analysis<br>• Centralized hyperparameter tracking | *ResNet50: In Progress / Planned* |
+| **Member 2** | • Standardized preprocessing & data pipeline<br>• Data augmentation design & leak prevention<br>• MobileNetV2 transfer learning & fine-tuning<br>• Metric tracking, loss curves & training time logs<br>• Test evaluation, confusion matrix & error analysis<br>• Interactive Streamlit UI & inference module | **Completed & Fully Documented** |
+| **Member 3** *(Current Scope)* | • ResNet50 transfer learning & fine-tuning pipeline<br>• Residual feature extraction & Stage 5 unfreezing<br>• Loss curves, metric logging & hyperparameter tracking<br>• Test evaluation, confusion matrix & error audit<br>• ResNet50 Streamlit inference application | **Completed & Fully Documented** |
 | **Member 4** | • EfficientNetB0 transfer learning & fine-tuning<br>• Compound scaling efficiency analysis<br>• Team visualization and comparative figure generation | *EfficientNetB0: In Progress / Planned* |
 
 > **Crucial Note on Scope:** Member 2 is exclusively responsible for preprocessing, data pipelines, MobileNetV2 experimentation, error analysis, and supporting the application inference pipeline. Member 2 is **not** responsible for the Custom CNN, ResNet50, EfficientNetB0, or the final team-wide comparative architecture selection.
@@ -109,7 +109,7 @@ dataset/
 
 ## 5. Standardized Preprocessing Pipeline
 
-Implemented in the project pipeline (configured in [results/mobilenetv2_preprocessing_config.json](file:///Users/gavidurushela/DL%20ass/plant-disease-classification/results/mobilenetv2_preprocessing_config.json)):
+Implemented in the project pipeline (configured in `results/mobilenetv2_preprocessing_config.json`):
 
 ### Pipeline Specifications
 - **Target Spatial Resolution:** $224 \times 224$ pixels
@@ -324,13 +324,13 @@ results/
 
 ## 12. Interactive Streamlit Demonstration Application
 
-A fully operational web demonstration interface has been developed in [app/app.py](file:///Users/gavidurushela/DL%20ass/plant-disease-classification/app/app.py) supported by the inference module in [src/inference/predictor.py](file:///Users/gavidurushela/DL%20ass/plant-disease-classification/src/inference/predictor.py).
+A fully operational web demonstration interface has been developed in `app/app.py` supported by the inference module in `src/inference/predictor.py`.
 
 ### Capabilities
 - **File Upload:** Accepts leaf images in standard formats (`.jpg`, `.jpeg`, `.png`).
 - **Live Preview:** Displays the uploaded leaf specimen.
 - **Automated Ingestion:** Converts to RGB, resizes to $224 \times 224$, and executes MobileNetV2 preprocessing.
-- **Model Execution:** Invokes the fine-tuned `MNV2-FT-01` model ([models/mobilenetv2_ft.keras](file:///Users/gavidurushela/DL%20ass/plant-disease-classification/models/mobilenetv2_ft.keras)).
+- **Model Execution:** Invokes the fine-tuned `MNV2-FT-01` model (`models/mobilenetv2_ft.keras`).
 - **Prediction Output:** Outputs the predicted disease class, confidence percentage, and per-class probability breakdown with visual progress bars.
 
 ```mermaid
@@ -363,7 +363,245 @@ Upon execution, Streamlit will provide a local URL (typically `http://localhost:
 
 ---
 
-## 13. Comprehensive Four-Model Comparison Status
+## 13. ResNet50 Preprocessing Pipeline (Member 3)
+
+Implemented and configured for the ResNet50 experimental workflow (saved in `results/resnet50_preprocessing_config.json`):
+
+### Pipeline Specifications
+- **Target Spatial Resolution:** $224 \times 224$ pixels
+- **Batch Size:** 32
+- **Random Seed:** 42 (fixed for reproducibility across all splits)
+- **Color Format:** RGB (3 channels)
+- **Normalization Function:** `tf.keras.applications.resnet50.preprocess_input`
+- **Normalized Dynamic Range:** Zero-centered with respect to ImageNet channel means ($[B - \mu_B, G - \mu_G, R - \mu_R]$)
+
+```mermaid
+flowchart LR
+    subgraph ResNet50_Training [Training Pipeline (Member 3)]
+        R1[Raw JPG Image] --> R2[Resize: 224x224]
+        R2 --> R3[Data Augmentation: Flip, Rotate 10%, Zoom 10%]
+        R3 --> R4[ResNet50 preprocess_input: Zero-Centered]
+        R4 --> R5[Batched & Prefetched: Batch Size 32]
+    end
+
+    subgraph ResNet50_Eval [Validation & Test Pipeline]
+        E1[Raw JPG Image] --> E2[Resize: 224x224]
+        E2 --> E3[Deterministic: NO Augmentation]
+        E3 --> E4[ResNet50 preprocess_input: Zero-Centered]
+        E4 --> E5[Batched & Prefetched: Batch Size 32]
+    end
+```
+
+### Data Augmentation Strategy (Training Partition Only)
+- **Random Flip:** Horizontal & Vertical (`RandomFlip("horizontal_and_vertical")`)
+- **Random Rotation:** Factor $= 0.10$ ($\pm 36^\circ$)
+- **Random Zoom:** Factor $= 0.10$ (in/out scale variation up to 10%)
+- **Validation & Test Safeguards:** Augmentation is strictly disabled on validation and test pipelines to prevent data leakage and preserve evaluation integrity.
+
+---
+
+## 14. ResNet50 Architecture & Residual Transfer Learning (Member 3)
+
+ResNet50 (Residual Network with 50 deep layers) introduces identity shortcut connections ($y = \mathcal{F}(x) + x$) that allow gradients to flow directly through the computational graph without degradation, enabling deeper hierarchical feature extraction of complex plant disease lesions.
+
+### Model Adaptation Workflow
+1. **Pre-trained Backbone:** `tf.keras.applications.ResNet50` loaded with pre-trained `ImageNet` weights (top classification head excluded, 5 residual stages).
+2. **Global Feature Pooling:** `GlobalAveragePooling2D()` compresses spatial feature maps into a 2,048-dimensional embedding vector.
+3. **Regularization:** `Dropout(rate=0.3)` mitigates feature co-adaptation across high-dimensional residual representations.
+4. **Classification Head:** `Dense(3, activation='softmax')` outputs class probability distribution across `Healthy`, `Powdery`, and `Rust`.
+
+```mermaid
+flowchart TD
+    A[Input Leaf Image: 224x224x3] --> B[ResNet50 Preprocessing: Caffe-style Zero-Centered]
+    B --> C[ResNet50 Backbone: 50 Layers, 5 Residual Stages]
+    C --> D[GlobalAveragePooling2D: 2048-D Embedding]
+    D --> E[Dropout: 0.3]
+    E --> F[Dense: 3 Units, Softmax Activation]
+    F --> G[Predictions: Healthy / Powdery / Rust]
+```
+
+---
+
+## 15. ResNet50 Experimental Settings & Results (Member 3)
+
+### Experiment 1: Baseline Transfer Learning (`RESNET50-BASE-01`)
+In this initial stage, all 50 layers of the ResNet50 backbone were frozen, training only the newly initialized classification head.
+
+- **Experiment ID:** `RESNET50-BASE-01`
+- **Pretrained Weights:** ImageNet
+- **Input Dimension:** $224 \times 224 \times 3$
+- **Backbone State:** Fully Frozen (0 trainable backbone parameters)
+- **Trainable Head Parameters:** 6,147
+- **Dropout Rate:** 0.3
+- **Batch Size:** 32
+- **Initial Learning Rate:** $1 \times 10^{-3}$ (0.001)
+- **Optimizer:** Adam
+- **Loss Function:** `sparse_categorical_crossentropy`
+- **Max Epochs Scheduled:** 10
+- **Actual Epochs Run:** 10
+- **Best Epoch:** 10
+- **Best Validation Accuracy:** **98.33%** (59/60 validation samples correct)
+- **Best Validation Loss:** **0.0312**
+- **Total Training Duration:** 657.52 seconds (10.96 minutes)
+- *Scope Note:* This baseline model was trained and evaluated strictly against the training and validation splits; test evaluation was reserved for the fine-tuned stage.
+
+### Experiment 2: Fine-Tuning Stage (`RESNET50-FT-01`)
+Following classification head convergence, the uppermost residual stage (**Stage 5**, beginning at `conv5_block1_1_conv` through the output) was unfrozen to adapt high-level visual representations to fine-grained foliar disease textures.
+
+- **Experiment ID:** `RESNET50-FT-01`
+- **Total Model Parameters:** 23,593,859
+- **Trainable Parameters:** **14,959,619** (Stage 5 bottleneck residual blocks + Classification Head)
+- **Non-Trainable Parameters:** 8,634,240 (Stages 1 through 4 completely frozen)
+- **Fine-Tuning Scope:** Unfrozen Stage 5 residual block (`conv5_block1_1_conv` upward)
+- **Dropout Rate:** 0.3
+- **Batch Size:** 32
+- **Initial Learning Rate:** $1 \times 10^{-5}$ ($0.00001$, reduced $100\times$ to prevent catastrophic forgetting)
+- **Optimizer:** Adam
+- **Callbacks:** EarlyStopping (monitor=`val_loss`, patience=3, restore_best_weights=True)
+- **Max Epochs Scheduled:** 10
+- **Actual Epochs Run:** 7 (EarlyStopping restored best model weights)
+- **Best Epoch:** 4 (restored by EarlyStopping)
+- **Best Validation Accuracy:** **100.00%** (60/60 validation samples correct)
+- **Best Validation Loss:** **0.0040**
+- **Total Training Duration:** 505.58 seconds (8.43 minutes)
+
+### ResNet50 Training Progress & Comparison Table
+
+| Experiment ID | Architecture | Backbone State | Trainable Params | Learning Rate | Best Val Acc | Best Val Loss | Best Epoch | Training Duration |
+| :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **RESNET50-BASE-01** | ResNet50 | Frozen | 6,147 | 0.001 | 98.33% | 0.0312 | 10 | 10.96 min (657.52s) |
+| **RESNET50-FT-01** | ResNet50 | Stage 5 Unfrozen | 14,959,619 | 0.00001 | **100.00%** | **0.0040** | 4 | 8.43 min (505.58s) |
+
+---
+
+## 16. Final ResNet50 Test Set Evaluation (Member 3)
+
+The fine-tuned `RESNET50-FT-01` model was evaluated against the untouched test split (150 images: 50 Healthy, 50 Powdery, 50 Rust).
+
+### Global Quantitative Metrics
+- **Evaluated Model:** `RESNET50-FT-01` ([models/resnet50_leaf_model.keras](file:///Users/DELL/OneDrive/Desktop/plant-disease-classification/models/resnet50_leaf_model.keras))
+- **Test Set Size:** 150 images
+- **Overall Accuracy:** **98.00%** (147 / 150 correct, only 3 misclassifications)
+- **Weighted Precision:** **98.04%**
+- **Weighted Recall:** **98.00%**
+- **Weighted F1-Score:** **98.00%**
+- **Weighted Multiclass ROC-AUC:** **99.88%** (0.9988)
+- **Total Training Time (Base + FT):** 1,163.10 seconds (19.39 minutes)
+
+### Per-Class Performance Breakdown
+
+| Class | Support | Correct | Precision | Recall | F1-Score |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Healthy** | 50 | 49 | 96.08% | 98.00% | 97.03% |
+| **Powdery** | 50 | 48 | 100.00% | 96.00% | 97.96% |
+| **Rust** | 50 | 50 | 98.04% | 100.00% | 99.01% |
+| **Overall / Weighted** | **150** | **147** | **98.04%** | **98.00%** | **98.00%** |
+
+---
+
+## 17. ResNet50 Confusion Matrix (Member 3)
+
+The exact confusion matrix obtained from evaluating `RESNET50-FT-01` on the 150 test samples:
+
+```
+                         PREDICTED CLASS
+                    Healthy    Powdery    Rust    Total
+ACTUAL    Healthy      49         0         1       50
+CLASS     Powdery       2        48         0       50
+          Rust          0         0        50       50
+          Total        51        48        51      150
+```
+
+### Key Observations
+1. **Flawless Rust Recognition:** ResNet50 achieved **100.00% recall on Rust** (50/50 samples correctly identified without a single false negative).
+2. **Elimination of Healthy $\rightarrow$ Powdery Errors:** Zero Healthy leaves were misclassified as Powdery (0 instances, compared to 2 in MobileNetV2).
+3. **100% Precision on Powdery Mildew:** Every single sample predicted as Powdery was genuinely Powdery (0 false positive predictions).
+4. **Significant Error Reduction:** Total test set misclassifications decreased by **62.5%** relative to MobileNetV2 (from 8 errors down to 3 errors).
+
+---
+
+## 18. ResNet50 Error Analysis & Failure Case Investigation (Member 3)
+
+Across the 150 test images, exactly 3 were misclassified by `RESNET50-FT-01`.
+
+### Error Distribution
+- **Healthy $\rightarrow$ Rust:** 1 image
+- **Powdery $\rightarrow$ Healthy:** 2 images
+- **Rust $\rightarrow$ Any:** 0 images (0% error rate on Rust)
+
+### Detailed Misclassification Audit
+
+| Test Index | True Class | Predicted Class | Confidence | Prob(Healthy) | Prob(Powdery) | Prob(Rust) |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **22** | Healthy | **Rust** | 95.60% | 4.40% | 0.00% | 95.60% |
+| **55** | Powdery | **Healthy** | 80.89% | 80.89% | 2.54% | 16.57% |
+| **61** | Powdery | **Healthy** | 90.01% | 90.01% | 2.93% | 7.06% |
+
+### Comparative Error Analysis & Insights
+1. **Consistent Subtle Powdery Cases (Indices 55 and 61):** Both MobileNetV2 and ResNet50 failed on the exact same two test samples (55 and 61), misclassifying them as Healthy. Visual analysis reveals very early-stage infections where powdery mildew fungal hyphae are extremely sparse and visually indistinct from natural leaf specular reflection.
+2. **Isolated Boundary Misclassification (Index 22):** Sample 22 features peripheral leaf edge discoloration and strong shadow contrast that activated deep rust-texture filters.
+
+---
+
+## 19. Preserved ResNet50 Experimental Results & Assets (Member 3)
+
+All experimental artifacts, metric summaries, and publication-ready plots for ResNet50 are saved and tracked in the `results/` directory:
+
+```
+results/
+├── resnet50_error_analysis.csv                # Table of 3 misclassified test images & full probability distributions
+├── resnet50_final_results.csv                 # Summary test metrics (98.00% Accuracy, 98.00% F1, 99.88% ROC-AUC)
+├── resnet50_experiment_comparison.csv         # Side-by-side comparison of baseline vs. Stage 5 fine-tuned runs
+├── resnet50_preprocessing_config.json         # Machine-readable ResNet50 preprocessing & Stage 5 hyperparameter config
+├── resnet50_confusion_matrix.csv              # 3x3 numeric confusion matrix table
+├── resnet50_confusion_matrix.png              # Confusion matrix heatmap visualization
+├── resnet50_baseline_accuracy.png             # Training vs. validation accuracy curve (Baseline)
+├── resnet50_baseline_loss.png                 # Training vs. validation loss curve (Baseline)
+├── resnet50_finetuning_accuracy.png           # Training vs. validation accuracy curve (Fine-Tuning Stage 5)
+└── resnet50_finetuning_loss.png               # Training vs. validation loss curve (Fine-Tuning Stage 5)
+```
+
+---
+
+## 20. Interactive ResNet50 Streamlit Demonstration Application (Member 3)
+
+A fully functional web demonstration application tailored for the fine-tuned ResNet50 model is implemented in [app/app_resnet50.py](file:///Users/DELL/OneDrive/Desktop/plant-disease-classification/app/app_resnet50.py).
+
+### Capabilities
+- **Model Architecture Selection:** Sidebar control allowing dynamic selection of available deep learning backbones.
+- **Image Upload & Live Preview:** Supports `.jpg`, `.jpeg`, and `.png` leaf photographs.
+- **Automated ResNet50 Preprocessing:** Resizes input to $224 \times 224$ and executes Caffe-style channel mean subtraction.
+- **Real-Time Inference:** Loads the fine-tuned [models/resnet50_leaf_model.keras](file:///Users/DELL/OneDrive/Desktop/plant-disease-classification/models/resnet50_leaf_model.keras) weights (214 MB) for local deep learning inference.
+- **Diagnostic Breakdown:** Renders final predicted pathology class, confidence metric, and interactive class probability progress bars.
+
+```mermaid
+flowchart LR
+    A[User: Web Browser] -->|Uploads Leaf Image| B[Streamlit UI: app/app_resnet50.py]
+    B --> C[ResNet50 Pipeline: 224x224 & preprocess_input]
+    C --> D[Trained Model: models/resnet50_leaf_model.keras]
+    D --> E[Softmax Class Probabilities]
+    E -->|Healthy / Powdery / Rust %| B
+```
+
+### How to Run the ResNet50 Application Locally
+To launch the ResNet50 interactive UI on your local workstation:
+
+```bash
+cd plant-disease-classification
+# Activate virtual environment
+# Windows:
+.\venv\Scripts\Activate.ps1
+# macOS / Linux:
+source venv/bin/activate
+
+# Launch Streamlit app
+python -m streamlit run app/app_resnet50.py
+```
+Upon execution, Streamlit will open the application at `http://localhost:8501`.
+
+---
+
+## 21. Comprehensive Four-Model Comparison Status
 
 The central research goal is benchmarking four distinct deep learning architectures. Below is the comparative evaluation table reflecting current empirical progress:
 
@@ -371,16 +609,16 @@ The central research goal is benchmarking four distinct deep learning architectu
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :--- | :--- |
 | **Custom CNN** | Scratch Baseline | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | In Progress / Planned | Member 1 |
 | **MobileNetV2** | Lightweight Transfer Learning | **94.67%** | **94.82%** | **94.67%** | **94.70%** | **99.76%** | **Completed & Evaluated** | Member 2 |
-| **ResNet50** | Deep Residual Network | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | In Progress / Planned | Member 3 |
+| **ResNet50** | Deep Residual Network | **98.00%** | **98.04%** | **98.00%** | **98.00%** | **99.88%** | **Completed & Evaluated** | Member 3 |
 | **EfficientNetB0** | Compound Scaling Transfer | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | In Progress / Planned | Member 4 |
 
 > [!IMPORTANT]
 > **Prohibition Against Premature Model Selection:**  
-> In accordance with scientific integrity rules, results for Custom CNN, ResNet50, and EfficientNetB0 are strictly marked as *TBD*. No cross-model superiority claims or final architecture recommendations can be made until all four architectures have completed training under identical experimental conditions.
+> In accordance with scientific integrity rules, results for Custom CNN and EfficientNetB0 are strictly marked as *TBD*. No final cross-model superiority claims or final architecture recommendations can be made until all four architectures have completed training under identical experimental conditions.
 
 ---
 
-## 14. Repository Structure
+## 22. Repository Structure
 
 ```
 plant-disease-classification/
@@ -419,7 +657,8 @@ plant-disease-classification/
 │
 ├── models/                                    # Serialized model weights (git-ignored)
 │   ├── .gitkeep                               # Tracked placeholder preserving directory
-│   └── mobilenetv2_ft.keras                   # Trained MobileNetV2 weights (19.2 MB, local only)
+│   ├── mobilenetv2_ft.keras                   # Trained MobileNetV2 weights (19.2 MB, local only)
+│   └── resnet50_leaf_model.keras              # Trained ResNet50 weights (214 MB, local only)
 │
 ├── results/                                   # Exported evaluation metrics & performance logs
 │   ├── .gitkeep                               # Tracked placeholder
@@ -431,19 +670,30 @@ plant-disease-classification/
 │   ├── mobilenetv2_final_results.csv
 │   ├── mobilenetv2_finetuning_accuracy.png
 │   ├── mobilenetv2_finetuning_loss.png
-│   └── mobilenetv2_preprocessing_config.json
+│   ├── mobilenetv2_preprocessing_config.json
+│   ├── resnet50_baseline_accuracy.png
+│   ├── resnet50_baseline_loss.png
+│   ├── resnet50_confusion_matrix.csv
+│   ├── resnet50_confusion_matrix.png
+│   ├── resnet50_error_analysis.csv
+│   ├── resnet50_experiment_comparison.csv
+│   ├── resnet50_final_results.csv
+│   ├── resnet50_finetuning_accuracy.png
+│   ├── resnet50_finetuning_loss.png
+│   └── resnet50_preprocessing_config.json
 │
 ├── figures/                                   # Visual figures and architectural diagrams
 │   └── .gitkeep                               # Tracked placeholder
 │
-└── app/                                       # Interactive demonstration application
+└── app/                                       # Interactive demonstration applications
     ├── .gitkeep                               # Tracked placeholder
-    └── app.py                                 # Streamlit web application
+    ├── app.py                                 # Streamlit web application (MobileNetV2)
+    └── app_resnet50.py                        # Streamlit web application (ResNet50)
 ```
 
 ---
 
-## 15. Local Setup & Installation Instructions
+## 23. Local Setup & Installation Instructions
 
 ### Prerequisites
 - **Operating System:** macOS, Linux, or Windows
@@ -496,9 +746,9 @@ python -m ipykernel install --user --name plant-disease-env --display-name "Pyth
 
 ---
 
-## 16. Git Configuration & Repository Cleanliness
+## 24. Git Configuration & Repository Cleanliness
 
-To prevent repository bloat and credential leaks, strict exclusion rules are enforced in [.gitignore](file:///Users/gavidurushela/DL%20ass/plant-disease-classification/.gitignore):
+To prevent repository bloat and credential leaks, strict exclusion rules are enforced in [.gitignore](file:///Users/DELL/OneDrive/Desktop/plant-disease-classification/.gitignore):
 
 ```gitignore
 # Virtual Environments
@@ -542,11 +792,11 @@ models/*
 
 ### Verification of Tracked vs. Ignored Components
 - **Ignored (Never Committed):** `dataset/Train/`, `dataset/Test/`, `dataset/Validation/`, `models/*.keras`, `venv/`, `__pycache__/`, `.ipynb_checkpoints/`.
-- **Tracked (Always Committed):** `notebooks/*.ipynb`, `src/`, `app/app.py`, `results/`, `figures/`, `README.md`, `requirements.txt`, `.gitignore`, and `.gitkeep` placeholders.
+- **Tracked (Always Committed):** `notebooks/*.ipynb`, `src/`, `app/*.py`, `results/`, `figures/`, `README.md`, `requirements.txt`, `.gitignore`, and `.gitkeep` placeholders.
 
 ---
 
-## 17. Scientific Reproducibility Checklist
+## 25. Scientific Reproducibility Checklist
 
 Before oral examination and final submission, verify:
 - [x] Standardized image resolution ($224 \times 224$) and normalization applied uniformly.
@@ -554,16 +804,17 @@ Before oral examination and final submission, verify:
 - [x] Random seed fixed to `42` for reproducible batch construction and pipeline operations.
 - [x] Data augmentation isolated exclusively to the training split.
 - [x] Test split kept completely unseen until final frozen model evaluation.
-- [x] Full confusion matrix and per-sample error logs saved in `results/`.
+- [x] Full confusion matrices and per-sample error logs saved in `results/`.
 - [x] Quantitative metric files exported as standard CSV and JSON formats.
 - [ ] Custom CNN implementation completed by Member 1.
-- [ ] ResNet50 implementation completed by Member 3.
+- [x] MobileNetV2 implementation completed by Member 2 (94.67% Test Accuracy).
+- [x] ResNet50 implementation completed by Member 3 (98.00% Test Accuracy, 0.9988 ROC-AUC).
 - [ ] EfficientNetB0 implementation completed by Member 4.
 - [ ] Final four-model comparative synthesis executed on identical test split.
 
 ---
 
-## 18. Project Status Summary
+## 26. Project Status Summary
 
 ```text
 [x] Repository Initialized & Structured
@@ -577,8 +828,13 @@ Before oral examination and final submission, verify:
 [x] Final MobileNetV2 Test Set Evaluation Executed (94.67% Test Acc, 94.70% F1)
 [x] Confusion Matrix & Detailed 8-Image Error Analysis Documented (Member 2)
 [x] Streamlit Inference Web Application Created & Tested Locally (app/app.py)
+[x] ResNet50 Preprocessing & Augmentation Pipeline Configured (Member 3)
+[x] ResNet50 Baseline Experiment Executed (RESNET50-BASE-01: 98.33% Val Acc)
+[x] ResNet50 Fine-Tuning Stage 5 Executed (RESNET50-FT-01: 100% Val Acc, 0.0040 Val Loss)
+[x] Final ResNet50 Test Set Evaluation Executed (98.00% Test Acc, 98.00% F1, 99.88% ROC-AUC)
+[x] ResNet50 Confusion Matrix & Detailed 3-Image Error Analysis Documented (Member 3)
+[x] ResNet50 Streamlit Inference Application Created & Tested Locally (app/app_resnet50.py)
 [ ] Custom CNN Baseline Experimentation (Member 1 - In Progress / Planned)
-[ ] ResNet50 Experimentation (Member 3 - In Progress / Planned)
 [ ] EfficientNetB0 Experimentation (Member 4 - In Progress / Planned)
 [ ] Final Four-Model Comparative Synthesis (Team - Planned)
 ```

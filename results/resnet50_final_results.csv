@@ -1,0 +1,2 @@
+model,test_accuracy,weighted_precision,weighted_recall,weighted_f1,roc_auc_weighted,healthy_f1,powdery_f1,rust_f1,total_params,finetune_trainable_params,baseline_time_sec,finetune_time_sec,total_training_time_sec
+ResNet50,0.98,0.9803921568627452,0.98,0.9799959587795515,0.9987999999999999,0.9702970297029703,0.9795918367346939,0.9900990099009901,23593859,14959619,657.52,505.58,1163.1
