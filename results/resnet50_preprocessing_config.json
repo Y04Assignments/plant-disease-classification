@@ -1,0 +1,26 @@
+{
+    "model_name": "ResNet50",
+    "image_size": [
+        224,
+        224
+    ],
+    "batch_size": 32,
+    "seed": 42,
+    "classes": [
+        "Healthy",
+        "Powdery",
+        "Rust"
+    ],
+    "preprocessing": "tf.keras.applications.resnet50.preprocess_input",
+    "augmentation": [
+        "RandomFlip(horizontal_and_vertical)",
+        "RandomRotation(0.1)",
+        "RandomZoom(0.1)"
+    ],
+    "baseline_epochs": 10,
+    "baseline_lr": 0.001,
+    "finetune_layers": "Stage 5 (conv5_block1_1_conv upward)",
+    "finetune_lr": 1e-05,
+    "early_stopping_patience": 3,
+    "best_epoch": 4
+}
