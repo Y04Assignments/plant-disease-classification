@@ -407,7 +407,7 @@ ResNet50 (Residual Network with 50 deep layers) introduces identity shortcut con
 ### Model Adaptation Workflow
 1. **Pre-trained Backbone:** `tf.keras.applications.ResNet50` loaded with pre-trained `ImageNet` weights (top classification head excluded, 5 residual stages).
 2. **Global Feature Pooling:** `GlobalAveragePooling2D()` compresses spatial feature maps into a 2,048-dimensional embedding vector.
-3. **Regularization:** `Dropout(rate=0.3)` mitigates feature co-adaptation across high-dimensional residual representations.
+3. **Regularization:** `Dropout(rate=0.2)` mitigates feature co-adaptation across high-dimensional residual representations.
 4. **Classification Head:** `Dense(3, activation='softmax')` outputs class probability distribution across `Healthy`, `Powdery`, and `Rust`.
 
 ```mermaid
