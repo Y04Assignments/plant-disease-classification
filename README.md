@@ -479,7 +479,7 @@ Following classification head convergence, the uppermost residual stage (**Stage
 The fine-tuned `RESNET50-FT-01` model was evaluated against the untouched test split (150 images: 50 Healthy, 50 Powdery, 50 Rust).
 
 ### Global Quantitative Metrics
-- **Evaluated Model:** `RESNET50-FT-01` ([models/resnet50_leaf_model.keras](file:///Users/DELL/OneDrive/Desktop/plant-disease-classification/models/resnet50_leaf_model.keras))
+- **Evaluated Model:** `RESNET50-FT-01` (`models/resnet50_leaf_model.keras`)
 - **Test Set Size:** 150 images
 - **Overall Accuracy:** **98.00%** (147 / 150 correct, only 3 misclassifications)
 - **Weighted Precision:** **98.04%**
