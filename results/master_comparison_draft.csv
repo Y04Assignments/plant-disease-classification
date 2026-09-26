@@ -1,0 +1,5 @@
+model,status,accuracy,weighted_precision,weighted_recall,weighted_f1,weighted_roc_auc,total_params,trainable_params,training_time_seconds,model_size_mb,cpu_inference_latency_ms,source_file
+Custom CNN,evaluated,0.9,0.9035649143378284,0.9,0.8991675186995267,0.9819333333333334,390627.0,389667.0,1471.5629076957705,4.766421,38.02639999958046,customcnn_final_results.csv
+MobileNetV2,evaluated,0.9466666666666668,0.9482151835093012,0.9466666666666668,0.9469805682812064,0.9976,2261827.0,,181.4963531494141,,,mobilenetv2_final_results.csv
+ResNet50,evaluated,0.98,0.9803921568627452,0.98,0.9799959587795516,0.9988,23593859.0,14959619.0,1163.1,,,resnet50_final_results.csv
+EfficientNetB0,pending,,,,,,,,,,,efficientnetb0_final_results.csv
