@@ -1,0 +1,14 @@
+{
+    "title": "Plant disease recognition dataset",
+    "url": "https://www.kaggle.com/datasets/rashikrahmanpritom/plant-disease-recognition-dataset",
+    "kaggle_ref": "rashikrahmanpritom/plant-disease-recognition-dataset",
+    "creator": "Rashik Rahman",
+    "owner_ref": "rashikrahmanpritom",
+    "license": "CC0: Public Domain (CC0-1.0)",
+    "version": 1,
+    "last_updated": "2021-07-04",
+    "user_specified_sources": "Online",
+    "stated_total_images": 1530,
+    "archive_bytes": 1353240862,
+    "retrieved_on": "2026-09-27"
+}

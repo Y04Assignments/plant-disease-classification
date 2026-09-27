@@ -1,0 +1,68 @@
+{
+    "model": "Custom CNN",
+    "selected_experiment": "CNN-EXP-01",
+    "architecture": {
+        "filters": [
+            32,
+            64,
+            128
+        ],
+        "batch_norm": false,
+        "dropout": 0.3,
+        "l2": 0.0,
+        "dense_units": 128
+    },
+    "image_size": "224x224",
+    "batch_size": 32,
+    "class_names": [
+        "Healthy",
+        "Powdery",
+        "Rust"
+    ],
+    "seed": 42,
+    "stability_seeds": [
+        42,
+        123,
+        2026
+    ],
+    "augmentation": {
+        "enabled_for_training": true,
+        "enabled_for_validation": false,
+        "enabled_for_test": false,
+        "horizontal_flip": true,
+        "rotation_factor": 0.05,
+        "translation_factor": 0.05,
+        "zoom_factor": 0.1
+    },
+    "model_specific_preprocessing": {
+        "function": "Rescaling(1/255) inside the model",
+        "output_range": "0 to 1"
+    },
+    "optimizer": {
+        "name": "Adam",
+        "initial_learning_rate": 0.001
+    },
+    "callbacks": {
+        "early_stopping": {
+            "monitor": "val_loss",
+            "patience": 6,
+            "restore_best_weights": true
+        },
+        "reduce_lr_on_plateau": {
+            "monitor": "val_loss",
+            "factor": 0.2,
+            "patience": 3,
+            "min_lr": 1e-06
+        }
+    },
+    "max_epochs": 30,
+    "selection_rule": "lowest validation loss (validation accuracy tie-break)",
+    "environment": {
+        "tensorflow": "2.20.0",
+        "python": "3.12.10",
+        "os": "Windows 11",
+        "processor": "AMD64 Family 25 Model 68 Stepping 1, AuthenticAMD",
+        "logical_cpus": 16,
+        "gpu_used": false
+    }
+}

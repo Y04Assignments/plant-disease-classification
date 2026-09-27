@@ -1,0 +1,46 @@
+{
+    "total_images": 1532,
+    "creator_stated_total": 1530,
+    "per_split": {
+        "Train": 1322,
+        "Validation": 60,
+        "Test": 150
+    },
+    "per_split_class": {
+        "Train": {
+            "Healthy": 458,
+            "Powdery": 430,
+            "Rust": 434
+        },
+        "Validation": {
+            "Healthy": 20,
+            "Powdery": 20,
+            "Rust": 20
+        },
+        "Test": {
+            "Healthy": 50,
+            "Powdery": 50,
+            "Rust": 50
+        }
+    },
+    "train_imbalance_ratio": 1.065,
+    "corrupt_files": 0,
+    "formats": {
+        "JPEG": 1532
+    },
+    "modes": {
+        "RGB": 1532
+    },
+    "distinct_resolutions": 8,
+    "most_common_resolution": "4000x2672 (1130 images)",
+    "median_megapixels": 10.69,
+    "exact_duplicate_files": 0,
+    "near_duplicate_pairs": 2,
+    "near_duplicate_threshold": 6,
+    "cross_split_near_duplicate_pairs": 0,
+    "label_conflict_pairs": 0,
+    "test_images_with_train_near_duplicate": 0,
+    "validation_images_with_train_near_duplicate": 0,
+    "leaked_test_files": [],
+    "leaked_validation_files": []
+}

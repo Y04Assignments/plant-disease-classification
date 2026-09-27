@@ -1,0 +1,3 @@
+file_a,split_a,class_a,file_b,split_b,class_b,hamming,exact,cross_split,label_conflict
+aa142048eff78bf4.jpg,Train,Rust,aa542048ebf78bf4.jpg,Train,Rust,2,False,False,False
+b80898e11f81ff1f.jpg,Train,Rust,b80898e11fa17f1f.jpg,Train,Rust,5,False,False,False

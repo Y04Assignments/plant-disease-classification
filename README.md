@@ -37,7 +37,8 @@ To maintain rigorous scientific standards, the following guidelines govern all p
 - **Strict Role Boundaries:** Each member has distinct architectural and pipeline responsibilities. Unfinished or unassigned components are explicitly identified as *In Progress* or *Planned*.
 - **Clear Status Distinction:**
   - **Completed Work:** Data auditing, standardized preprocessing pipelines, MobileNetV2 baseline and fine-tuning experiments (Member 2), ResNet50 baseline and fine-tuning experiments (Member 3), final test evaluations for MobileNetV2 and ResNet50, confusion matrices, detailed error analyses, and local Streamlit inference applications.
-  - **Ongoing / Planned Work:** Custom CNN (Member 1), EfficientNetB0 (Member 4), and final cross-architecture benchmark synthesis.
+  - **Completed (Member 1):** Dataset provenance verification, EDA with duplicate/leakage audit (`01_EDA.ipynb`), and the Custom CNN baseline with experiments, test evaluation, error analysis, Grad-CAM and 3-seed stability study (`03_Custom_CNN.ipynb`).
+  - **Ongoing / Planned Work:** EfficientNetB0 (Member 4) and final cross-architecture benchmark synthesis.
 - **Unverified Attributes:** If external attributes (such as exact Kaggle source URLs or specific dataset licensing) lack direct repository proof, they are explicitly marked as *“Not yet verified”* or *“To be completed by the team.”*
 
 ---
@@ -48,7 +49,7 @@ The project workload is distributed across four university team members with cle
 
 | Member | Assigned Primary Responsibilities | Current Implementation Status |
 | :--- | :--- | :--- |
-| **Member 1** | • Overall project framework & experimental protocol<br>• Dataset integrity oversight & EDA documentation<br>• Custom CNN baseline architecture from scratch<br>• Cross-model comparison coordination | *Custom CNN: In Progress / Planned* |
+| **Member 1** | • Overall project framework & experimental protocol<br>• Dataset integrity oversight & EDA documentation<br>• Custom CNN baseline architecture from scratch<br>• Cross-model comparison coordination | **Completed & Fully Documented** |
 | **Member 2** | • Standardized preprocessing & data pipeline<br>• Data augmentation design & leak prevention<br>• MobileNetV2 transfer learning & fine-tuning<br>• Metric tracking, loss curves & training time logs<br>• Test evaluation, confusion matrix & error analysis<br>• Interactive Streamlit UI & inference module | **Completed & Fully Documented** |
 | **Member 3** *(Current Scope)* | • ResNet50 transfer learning & fine-tuning pipeline<br>• Residual feature extraction & Stage 5 unfreezing<br>• Loss curves, metric logging & hyperparameter tracking<br>• Test evaluation, confusion matrix & error audit<br>• ResNet50 Streamlit inference application | **Completed & Fully Documented** |
 | **Member 4** | • EfficientNetB0 transfer learning & fine-tuning<br>• Compound scaling efficiency analysis<br>• Team visualization and comparative figure generation | *EfficientNetB0: In Progress / Planned* |
@@ -61,7 +62,11 @@ The project workload is distributed across four university team members with cle
 
 ### Dataset Source & Provenance Status
 - **Source Specification:** Kaggle Plant Disease Recognition Dataset.
-- **Provenance / License Status:** *Not yet verified* (to be formally verified and documented by the team).
+- **URL:** https://www.kaggle.com/datasets/rashikrahmanpritom/plant-disease-recognition-dataset
+- **Creator:** Rashik Rahman (`rashikrahmanpritom`) · **Licence:** CC0: Public Domain (CC0-1.0) · **Version:** 1 (2021-07-04)
+- **Provenance / License Status:** Verified via the Kaggle API on 2026-09-27 (Member 1); saved in `results/dataset_metadata.json`.
+- **Download:** `pip install kagglehub` then `python -c "import kagglehub; print(kagglehub.dataset_download('rashikrahmanpritom/plant-disease-recognition-dataset'))"`, and copy the inner `Train/Train/<class>`, `Validation/Validation/<class>`, `Test/Test/<class>` folders to `dataset/Train/<class>`, `dataset/Validation/<class>`, `dataset/Test/<class>`.
+- **EDA / audit (Member 1):** 0 corrupt files, 0 exact duplicates, 0 cross-split near-duplicates (MD5 + dHash) — see `notebooks/01_EDA.ipynb`.
 - **Integrity Rule:** The raw dataset images are strictly excluded from version control via `.gitignore`.
 
 ### Locally Verified Dataset Partitioning
@@ -601,20 +606,51 @@ Upon execution, Streamlit will open the application at `http://localhost:8501`.
 
 ---
 
+## EDA & Custom CNN Baseline (Member 1)
+
+### EDA (`notebooks/01_EDA.ipynb`)
+Covers dataset provenance, class and split distribution, image resolution and aspect ratio, a corrupt-file check, per-class colour/brightness/sharpness statistics, a split-shift check, and an exact (MD5) plus near-duplicate (dHash) leakage audit. Figures are in `figures/eda/` and summaries in `results/eda_summary.json`.
+
+Key findings:
+- The classes are nearly balanced (train ratio 1.065).
+- The validation set has only 60 images, so validation loss is used for model selection.
+- There are 0 corrupt files and 0 cross-split duplicates.
+- Images are about 10.7 MP with a 1.5:1 aspect ratio, which the 224×224 resize distorts.
+- Colour is class-informative, so no hue augmentation is used.
+
+### Custom CNN (`notebooks/03_Custom_CNN.ipynb`)
+- **Architecture:** 4 × [Conv3×3 → BatchNorm → ReLU → MaxPool] (32-64-128-256 filters) → GlobalAveragePooling → Dropout 0.3 → Dense(3, softmax). 390,627 parameters, trained from scratch.
+- **Protocol:** same splits, 224×224 input, batch 32, seed 42 and training-only augmentation as MobileNetV2. `Rescaling(1/255)` inside the model. Adam 1e-3, EarlyStopping (patience 10) and ReduceLROnPlateau on validation loss.
+- **Tuning:** 3 experiments selected on validation loss (`results/customcnn_experiment_comparison.csv`). An earlier run with shorter patience is archived in `results/customcnn_run1_archive/` and explained in the notebook.
+
+| Metric | Value |
+| :--- | :--- |
+| Test accuracy / weighted F1 / ROC-AUC | 90.00% / 89.92% / 98.19% |
+| Per-class F1 (Healthy / Powdery / Rust) | 0.887 / 0.950 / 0.860 |
+| 3-seed stability (42, 123, 2026) | 90.44% ± 0.77% |
+| Model size / CPU latency | 4.8 MB / 38 ms per image |
+| Training time | 24.5 min, CPU only (no GPU) |
+
+**Main error:** Rust → Healthy on leaves with a single small lesion (8 of 15 errors). Grad-CAM (`results/customcnn_gradcam.png`) shows attention on lesions for correct predictions, and on glare or background for errors.
+
+**Draft master table:** `python src/evaluation/build_master_table.py` → `results/master_comparison_draft.csv`.
+
+---
+
 ## 21. Comprehensive Four-Model Comparison Status
 
 The central research goal is benchmarking four distinct deep learning architectures. Below is the comparative evaluation table reflecting current empirical progress:
 
 | Architecture | Paradigm | Test Accuracy | Weighted Precision | Weighted Recall | Weighted F1 | Weighted ROC-AUC | Implementation Status | Responsible Member |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :--- | :--- |
-| **Custom CNN** | Scratch Baseline | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | In Progress / Planned | Member 1 |
+| **Custom CNN** | Scratch Baseline | **90.00%** | **90.36%** | **90.00%** | **89.92%** | **98.19%** | **Completed & Evaluated** | Member 1 |
 | **MobileNetV2** | Lightweight Transfer Learning | **94.67%** | **94.82%** | **94.67%** | **94.70%** | **99.76%** | **Completed & Evaluated** | Member 2 |
 | **ResNet50** | Deep Residual Network | **98.00%** | **98.04%** | **98.00%** | **98.00%** | **99.88%** | **Completed & Evaluated** | Member 3 |
 | **EfficientNetB0** | Compound Scaling Transfer | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | In Progress / Planned | Member 4 |
 
 > [!IMPORTANT]
 > **Prohibition Against Premature Model Selection:**  
-> In accordance with scientific integrity rules, results for Custom CNN and EfficientNetB0 are strictly marked as *TBD*. No final cross-model superiority claims or final architecture recommendations can be made until all four architectures have completed training under identical experimental conditions.
+> In accordance with scientific integrity rules, results for EfficientNetB0 are strictly marked as *TBD*. No final cross-model superiority claims or final architecture recommendations can be made until all four architectures have completed training under identical experimental conditions.
 
 ---
 
@@ -636,7 +672,7 @@ plant-disease-classification/
 ├── notebooks/                                 # Interactive experimental Jupyter notebooks
 │   ├── 01_EDA.ipynb                           # Exploratory data analysis & image distribution
 │   ├── 02_Preprocessing.ipynb                 # Preprocessing pipeline, MobileNetV2 training & evaluation
-│   ├── 03_CustomCNN.ipynb                     # Custom CNN baseline from scratch (Member 1)
+│   ├── 03_Custom_CNN.ipynb                    # Custom CNN baseline from scratch (Member 1)
 │   ├── 04_MobileNetV2.ipynb                   # MobileNetV2 standalone experimentation
 │   ├── 05_ResNet50.ipynb                      # ResNet50 residual network transfer learning (Member 3)
 │   └── 06_EfficientNetB0.ipynb                # EfficientNetB0 compound scaling implementation (Member 4)
@@ -806,7 +842,7 @@ Before oral examination and final submission, verify:
 - [x] Test split kept completely unseen until final frozen model evaluation.
 - [x] Full confusion matrices and per-sample error logs saved in `results/`.
 - [x] Quantitative metric files exported as standard CSV and JSON formats.
-- [ ] Custom CNN implementation completed by Member 1.
+- [x] Custom CNN implementation completed by Member 1 (90.00% Test Accuracy, 0.9819 ROC-AUC; 3-seed mean 90.44% ± 0.77%).
 - [x] MobileNetV2 implementation completed by Member 2 (94.67% Test Accuracy).
 - [x] ResNet50 implementation completed by Member 3 (98.00% Test Accuracy, 0.9988 ROC-AUC).
 - [ ] EfficientNetB0 implementation completed by Member 4.
@@ -834,7 +870,9 @@ Before oral examination and final submission, verify:
 [x] Final ResNet50 Test Set Evaluation Executed (98.00% Test Acc, 98.00% F1, 99.88% ROC-AUC)
 [x] ResNet50 Confusion Matrix & Detailed 3-Image Error Analysis Documented (Member 3)
 [x] ResNet50 Streamlit Inference Application Created & Tested Locally (app/app_resnet50.py)
-[ ] Custom CNN Baseline Experimentation (Member 1 - In Progress / Planned)
+[x] Dataset Provenance Verified (Kaggle, Rashik Rahman, CC0-1.0) & EDA / Leakage Audit Completed (Member 1)
+[x] Custom CNN Experiments Executed (3 configurations; CNN-EXP-02 selected on validation loss) (Member 1)
+[x] Final Custom CNN Test Evaluation (90.00% Test Acc, 89.92% F1, 98.19% ROC-AUC) & Error Analysis + Grad-CAM (Member 1)
 [ ] EfficientNetB0 Experimentation (Member 4 - In Progress / Planned)
 [ ] Final Four-Model Comparative Synthesis (Team - Planned)
 ```
