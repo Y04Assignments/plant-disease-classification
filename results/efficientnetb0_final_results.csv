@@ -1,0 +1,2 @@
+model,configuration,test_samples,test_loss,accuracy,weighted_precision,weighted_recall,weighted_f1,weighted_roc_auc,best_val_accuracy,best_val_loss,best_val_epoch,epochs_completed,training_time_seconds,training_time_minutes,total_parameters,trainable_parameters
+EfficientNetB0,Frozen ImageNet backbone,150,0.09895340353250504,0.9733333333333334,0.9738247863247864,0.9733333333333334,0.9733226623982927,0.9964666666666666,1.0,0.04067069664597511,9,20,401.98349809646606,6.699724968274435,4053414,3843
