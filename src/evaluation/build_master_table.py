@@ -1,8 +1,3 @@
-"""Merge each model's saved final-results CSV into one comparison table.
-
-Run from the repository root:  python src/evaluation/build_master_table.py
-Models whose results file does not exist yet (e.g. EfficientNetB0) are listed as pending.
-"""
 from pathlib import Path
 
 import pandas as pd
@@ -25,9 +20,17 @@ SOURCES = {
         "weighted_f1": "weighted_f1", "roc_auc_weighted": "weighted_roc_auc", "total_params": "total_params",
         "finetune_trainable_params": "trainable_params", "total_training_time_sec": "training_time_seconds"}),
     "EfficientNetB0": ("efficientnetb0_final_results.csv", {
-        "accuracy": "accuracy", "weighted_precision": "weighted_precision", "weighted_recall": "weighted_recall",
-        "weighted_f1": "weighted_f1", "weighted_roc_auc": "weighted_roc_auc", "total_params": "total_params",
-        "trainable_params": "trainable_params", "training_time_seconds": "training_time_seconds"}),
+        "accuracy": "accuracy",
+        "weighted_precision": "weighted_precision",
+        "weighted_recall": "weighted_recall",
+        "weighted_f1": "weighted_f1",
+        "weighted_roc_auc": "weighted_roc_auc",
+        "total_parameters": "total_params",
+        "trainable_parameters": "trainable_params",
+        "training_time_seconds": "training_time_seconds",
+        "model_size_mb": "model_size_mb",
+        "average_inference_latency_ms": "cpu_inference_latency_ms",
+    }),
 }
 # Values reported in a notebook's printed output but not saved to its results CSV.
 NOTEBOOK_VALUES = {
