@@ -42,17 +42,19 @@ MODEL_CONFIGS = {
 
     "MobileNetV2": {
         "path": MODELS_DIR / "mobilenetv2_ft.keras",
-        "preprocessing": "none",
+        # trained with mobilenet_v2.preprocess_input applied outside the model
+        "preprocessing": "mobilenet_v2",
     },
 
     "ResNet50": {
         "path": MODELS_DIR / "resnet50_leaf_model.keras",
-        "preprocessing": "none",
+        # trained with resnet50.preprocess_input applied outside the model
+        "preprocessing": "resnet50",
     },
 
     "Custom CNN": {
-        # change to CNN model path
-        "path": MODELS_DIR / "efficientnetb0_frozen_final.keras",
+        # model includes Rescaling(1/255)
+        "path": MODELS_DIR / "custom_cnn_best.keras",
         "preprocessing": "none",
     },
 }
@@ -140,6 +142,16 @@ def predict_image(
 
     if preprocessing == "none":
         processed = image_array
+
+    elif preprocessing == "mobilenet_v2":
+        processed = tf.keras.applications.mobilenet_v2.preprocess_input(
+            image_array
+        )
+
+    elif preprocessing == "resnet50":
+        processed = tf.keras.applications.resnet50.preprocess_input(
+            image_array
+        )
 
     else:
         raise ValueError(
