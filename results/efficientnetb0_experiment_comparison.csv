@@ -1,3 +1,3 @@
 experiment_id,configuration,backbone_trainable_layers,learning_rate,best_val_accuracy,best_val_loss,best_epoch,epochs_completed,training_time_seconds,training_time_minutes
-ENB0-EXP-01,Frozen baseline,0,0.001,1.0,0.05592253431677818,17,20,365.03831124305725,6.083971854050954
-ENB0-EXP-02,Fine-tuned later layers,38,1e-05,1.0,0.06561698764562607,1,6,136.3138566017151,2.2718976100285846
+ENB0-EXP-01,Frozen baseline,0,0.001,1.0,0.05797902122139931,19,20,352.52114176750183,5.8753523627916975
+ENB0-EXP-02,Fine-tuned later layers,38,1e-05,0.9666666388511658,0.13269378244876862,1,6,100.66955590248108,1.677825931708018
