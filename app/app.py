@@ -42,14 +42,12 @@ MODEL_CONFIGS = {
 
     "MobileNetV2": {
         "path": MODELS_DIR / "mobilenetv2_ft.keras",
-        # trained with mobilenet_v2.preprocess_input applied outside the model
-        "preprocessing": "mobilenet_v2",
+        "preprocessing": "none",
     },
 
     "ResNet50": {
         "path": MODELS_DIR / "resnet50_leaf_model.keras",
-        # trained with resnet50.preprocess_input applied outside the model
-        "preprocessing": "resnet50",
+        "preprocessing": "none",
     },
 
     "Custom CNN": {
